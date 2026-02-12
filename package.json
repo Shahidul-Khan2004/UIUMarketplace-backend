@@ -1,0 +1,23 @@
+{
+  "name": "uiumarketplace-backend",
+  "version": "1.0.0",
+  "description": "Backend for UIU Marketplace, a platform for buying and selling products among students of United International University (UIU).",
+  "homepage": "https://github.com/Shahidul-Khan2004/UIUMarketplace-backend#readme",
+  "bugs": {
+    "url": "https://github.com/Shahidul-Khan2004/UIUMarketplace-backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shahidul-Khan2004/UIUMarketplace-backend.git"
+  },
+  "license": "MIT",
+  "author": "Md. Shahidul Islam Khan",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
