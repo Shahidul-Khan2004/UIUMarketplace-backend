@@ -1,7 +1,7 @@
 import "dotenv/config";
 import express from "express";
-import healthRouter from "./routes/health.js";
-import authRouter from "./routes/auth.js";
+import healthRouter from "./api/routes/health.js";
+import authRouter from "./api/routes/auth.js";
 
 const app = express();
 

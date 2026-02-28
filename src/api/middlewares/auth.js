@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import query from '../config/db.js';
+import query from '../../config/db.js';
 
 export async function registerUser(req, res) {
     try {

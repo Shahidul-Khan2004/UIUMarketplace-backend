@@ -14,7 +14,7 @@ const pool = new Pool({
   connectionTimeoutMillis: 2000,
 });
 
-async function query(text, params) {
+export async function query(text, params) {
   try {
     const res = await pool.query(text, params);
     return res;
@@ -24,4 +24,4 @@ async function query(text, params) {
   }
 }
 
-export default query;
+export default pool;
