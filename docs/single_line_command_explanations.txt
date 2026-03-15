@@ -1,0 +1,93 @@
+Command 1
+
+sudo docker compose exec -T db pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Fc > db.dump
+
+Explanation:
+
+- sudo
+  Runs the Docker command with root privileges. This is needed when your Docker setup is using the system daemon and your current user is not managing it directly.
+
+- docker compose exec
+  Runs a command inside an already running Compose service container.
+
+- -T
+  Disables interactive terminal mode. This matters because pg_dump produces raw dump output, and you want a clean stream written to a file.
+
+- db
+  The Compose service name. The command runs inside the db container.
+
+- pg_dump
+  PostgreSQL's built-in backup/export tool.
+
+- -U "$POSTGRES_USER"
+  Connect to PostgreSQL using the username stored in the POSTGRES_USER shell variable.
+
+- -d "$POSTGRES_DB"
+  Dump the database whose name is stored in the POSTGRES_DB shell variable.
+
+- -Fc
+  Use PostgreSQL custom dump format. This format is intended for pg_restore and is more flexible than plain SQL.
+
+- > db.dump
+  Redirect the dump output into a file named db.dump on your host machine, in the current directory.
+
+What this command does overall:
+
+- It enters the running Postgres container.
+- It runs pg_dump.
+- It streams the dump out to your host terminal.
+- It saves that output locally as db.dump.
+
+Important note:
+
+- "$POSTGRES_USER" and "$POSTGRES_DB" are expanded by your host shell before the command enters the container.
+- If those variables are not set in your host shell, the command may fail or fall back to defaults.
+
+
+Command 2
+
+cat db.dump | sudo docker compose exec -T db pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --clean --if-exists
+
+Explanation:
+
+- cat db.dump
+  Reads the local dump file db.dump from your host machine and sends its contents to standard output.
+
+- |
+  Pipe operator. Sends the output of cat db.dump as input to the next command.
+
+- sudo docker compose exec
+  Runs a command inside the running Compose service container.
+
+- -T
+  Disables interactive terminal mode so the binary dump data can be passed cleanly through standard input.
+
+- db
+  The Compose service name. The restore runs inside the Postgres container.
+
+- pg_restore
+  PostgreSQL's restore tool for dumps created in formats like -Fc.
+
+- -U "$POSTGRES_USER"
+  Connect as the PostgreSQL user stored in POSTGRES_USER.
+
+- -d "$POSTGRES_DB"
+  Restore into the database stored in POSTGRES_DB.
+
+- --clean
+  Drop existing database objects before recreating them from the dump.
+
+- --if-exists
+  When dropping objects, do not error if they do not already exist.
+
+What this command does overall:
+
+- It reads the local db.dump file.
+- It sends that file into the running Postgres container.
+- pg_restore reads the dump from standard input.
+- It restores the database contents into the target database.
+
+Important note:
+
+- --clean --if-exists is useful when restoring over an existing database.
+- If you already deleted the Docker volume and started a fresh empty database, these flags are usually optional.

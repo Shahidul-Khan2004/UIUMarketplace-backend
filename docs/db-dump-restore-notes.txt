@@ -1,0 +1,26 @@
+﻿* Dump DB:
+   * Steps: 
+      * sudo docker compose exec db sh
+         * Get into the shell for db
+      * pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Fc -f /tmp/db.dump
+         * -Fc is the file format preferable for postgres
+      * Check if /tmp/db.dump exists
+      * Exit
+      * sudo docker compose cp db:/tmp/db.dump ./db.dump
+         * Copy db.dump outside
+   * Single command:
+      * sudo docker compose exec -T db pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Fc > db.dump
+         * Caution: if env is not loaded in the terminal use actual values from env in place of “$POSTGRES_USER” and “$POSTGRES_DB” 
+* Restore DB:
+   * Steps:
+      * sudo docker compose cp ./db.dump db:/tmp/db.dump
+         * Copy the dump inside the container
+      * sudo docker compose exec db sh
+         * Get into the shell for db
+      * pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --clean --if-exists /tmp/db.dump
+         * --clean means Drop DB objects before recreating them.
+         * --if-exists means won’t fail for something that doesn’t exist.
+      * Exit
+   * Single command:
+      * sudo cat db.dump | sudo docker compose exec -T db pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --clean --if-exists
+         * Caution: if env is not loaded in the terminal use actual values from env in place of “$POSTGRES_USER” and “$POSTGRES_DB”
